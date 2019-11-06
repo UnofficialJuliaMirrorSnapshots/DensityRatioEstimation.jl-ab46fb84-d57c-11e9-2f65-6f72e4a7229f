@@ -1,12 +1,13 @@
 using Test, Statistics, Distributions, Distances, DensityRatioEstimation
 using DensityRatioEstimation: pairwise_sqd, gaussian_gram, gaussian_gram_by_pairwise_sqd
+using JuMP, Ipopt
 
 @testset "Correctness of `pairwise_sqd` and `gaussian_gram_by_pairwise_sqd`" begin
     pairwise_sqd_golden(x) = pairwise(SqEuclidean(), x; dims=2)
     pairwise_sqd_golden(x, y) = pairwise(SqEuclidean(), x, y; dims=2)
 
     xtest = [
-        1.0 2.0 4.0; 
+        1.0 2.0 4.0;
         1.0 2.0 4.0
     ]
 
@@ -74,11 +75,11 @@ end
 
         r_solve = estimate_ratio(MMDAnalytical(method=:solve), x_de, x_nu)
         r_inv = estimate_ratio(MMDAnalytical(method=:inv), x_de, x_nu)
-        
+
         @test r_solve ≈ r_inv
 
-        r_solve = estimate_ratio(MMDAnalytical(ϵ=0), x_de, x_nu)
-        r_inv = estimate_ratio(MMDAnalytical(ϵ=0), x_de, x_nu)
+        r_solve = estimate_ratio(MMDAnalytical(0), x_de, x_nu)
+        r_inv = estimate_ratio(MMDAnalytical(0), x_de, x_nu)
 
         @test r_solve ≈ r_inv
     end
